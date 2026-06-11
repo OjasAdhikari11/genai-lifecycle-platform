@@ -32,6 +32,12 @@ MANIFEST
 *.manifest
 *.spec
 
+
+# AI assistant local configuration
+.cursor/
+.github/copilot-instructions.md
+
+
 # Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
