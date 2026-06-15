@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from openai import APIError, OpenAI
 
 from app.config import MAX_NEW_TOKENS, OPENAI_API_KEY, OPENAI_MODEL
@@ -8,6 +9,15 @@ app = FastAPI(
     title="GenAI Lifecycle Platform",
     description="Backend API for the GenAI lifecycle learning project",
     version="0.1.0",
+)
+
+# Add CORS middleware to allow requests from frontend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173", "http://localhost:3000"],  # Vite dev server and production
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
