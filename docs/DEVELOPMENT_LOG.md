@@ -3,7 +3,7 @@
 
 ## Current Phase
 
-Phase 0: Project Initialization
+Phase 3: Simple React Frontend
 
 
 ## Completed Tasks
@@ -11,24 +11,34 @@ Phase 0: Project Initialization
 - [x] Created Github repository
 - [x] Created project structure
 - [x] Added Copilot instructions
+- [x] Created Python virtual environment
+- [x] Setup FastAPI application
+- [x] Created health check endpoint
+- [x] Installed backend dependencies (FastAPI, Uvicorn)
+- [x] Added OpenAI integration
+- [x] Created chat endpoint (`POST /chat`)
+- [x] Added environment variable configuration (`.env.example`)
+- [x] Created React frontend with Vite
+- [x] Built chat interface component
+- [x] Added API integration layer
+- [x] Added CORS support to backend
 
 
 ## Current Architecture
 
 
-Browser
+Browser / API Client
+
+↓
+
+FastAPI Backend
+
+├── GET /health
+└── POST /chat → OpenAI API (gpt-4o-mini, max 256 tokens)
 
 ↓
 
 React Frontend (Not Created)
-
-↓
-
-FastAPI Backend (Not Created)
-
-↓
-
-OpenAI API
 
 
 
@@ -37,15 +47,18 @@ OpenAI API
 
 ### Completed
 
-None
+- FastAPI application (`backend/app/main.py`)
+- Health check endpoint (`GET /health`)
+- Chat endpoint (`POST /chat`) with OpenAI API integration
+- Request/response schemas (`backend/app/schemas/chat.py`)
+- Environment config (`backend/app/config/settings.py`, `backend/.env.example`)
+- Token limit via `MAX_NEW_TOKENS` (default: 256)
+- Dependencies defined in `backend/requirements.txt`
 
 
 ### Pending
 
-- Setup FastAPI application
-- Create health check endpoint
-- Connect OpenAI API
-- Create chatbot endpoint
+- Add proper project structure (routers, services)
 - Add authentication
 - Add database layer
 - Add tests
@@ -57,15 +70,21 @@ None
 
 ### Completed
 
-None
+- React Vite project setup (`frontend/`)
+- Chat interface component with message display
+- Chat input form with send button
+- API integration layer (`frontend/src/api.js`)
+- API health check status indicator
+- Message history with auto-scroll
+- Responsive styling and animations
+- Environment configuration (`.env`, `.env.example`)
 
 
 ### Pending
 
-- Create React project
-- Create login page
-- Create chat interface
-- Connect backend API
+- Authentication UI (login page)
+- User sessions
+- Message persistence (local storage or backend)
 
 
 
@@ -144,6 +163,7 @@ Pending:
 Github Actions pipeline
 
 
+
 ## Deployment Status
 
 
@@ -187,18 +207,52 @@ Reason:
 Show project evolution to recruiters.
 
 
+4. Backend code lives under `backend/` with `app/main.py` as the entry point.
+
+Reason:
+
+Matches planned project structure and keeps the API isolated from the future React frontend.
+
+
+5. Virtual environment at project root (`venv/`) shared for backend development.
+
+Reason:
+
+Single venv for the Python backend keeps local setup simple during early phases.
+
+
+6. OpenAI API key stored in `backend/.env`, never hardcoded.
+
+Reason:
+
+Follows security best practices; `.env` is gitignored, `.env.example` documents required variables.
+
+
+7. `MAX_NEW_TOKENS` capped server-side (default 256).
+
+Reason:
+
+Controls API cost and response length during development.
+
+
+8. Configuration lives in `backend/app/config/` (settings module).
+
+Reason:
+
+Keeps environment and app settings separate from route logic as the project grows.
+
+
 
 ## Next Immediate Task
 
-Setup FastAPI backend:
+Step 4: Test backend and frontend integration
 
-- Create virtual environment
-- Install dependencies
-- Create app/main.py
-- Create health endpoint
-- Test locally
+1. Start backend: `uvicorn backend.app.main:app --reload`
+2. Start frontend: `npm run dev` (in `frontend/` directory)
+3. Navigate to `http://localhost:5173`
+4. Test chat functionality end-to-end
 
 
 ## Last Updated
 
-Initial setup
+2026-06-15 — Simple React frontend created with chat interface
