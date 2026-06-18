@@ -37,6 +37,9 @@ MANIFEST
 .cursor/
 .github/copilot-instructions.md
 
+# Local project notes (not shared)
+PROJECT_GUIDE.txt
+
 
 # Installer logs
 pip-log.txt
@@ -66,6 +69,7 @@ cover/
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
+*.db
 
 # Flask stuff:
 instance/

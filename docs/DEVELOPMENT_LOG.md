@@ -3,7 +3,7 @@
 
 ## Current Phase
 
-Phase 3: Simple React Frontend
+Phase 4: Authentication System with SQLite
 
 
 ## Completed Tasks
@@ -22,6 +22,15 @@ Phase 3: Simple React Frontend
 - [x] Built chat interface component
 - [x] Added API integration layer
 - [x] Added CORS support to backend
+- [x] Set up SQLAlchemy with SQLite database
+- [x] Created User model with authentication
+- [x] Built signup endpoint (`POST /auth/signup`)
+- [x] Built login endpoint (`POST /auth/login`)
+- [x] Implemented JWT token authentication
+- [x] Protected chat endpoint with token validation
+- [x] Created frontend Login page
+- [x] Created frontend Signup page
+- [x] Added token persistence (localStorage)
 
 
 ## Current Architecture
@@ -49,19 +58,27 @@ React Frontend (Not Created)
 
 - FastAPI application (`backend/app/main.py`)
 - Health check endpoint (`GET /health`)
-- Chat endpoint (`POST /chat`) with OpenAI API integration
-- Request/response schemas (`backend/app/schemas/chat.py`)
+- Chat endpoint (`POST /chat`) with OpenAI API integration & JWT protection
+- Request/response schemas (`backend/app/schemas/`)
 - Environment config (`backend/app/config/settings.py`, `backend/.env.example`)
 - Token limit via `MAX_NEW_TOKENS` (default: 256)
 - Dependencies defined in `backend/requirements.txt`
+- SQLAlchemy ORM setup with SQLite (`backend/app/database.py`)
+- User model with password hashing (`backend/app/models/user.py`)
+- Authentication endpoints:
+  - `POST /auth/signup` - Create new user account
+  - `POST /auth/login` - Login and get JWT token
+  - `GET /auth/me` - Get current user (requires token)
+- JWT token generation and validation (`backend/app/security.py`)
+- CORS middleware for frontend communication
 
 
 ### Pending
 
-- Add proper project structure (routers, services)
-- Add authentication
-- Add database layer
+- Chat history storage per user
+- User profile endpoints
 - Add tests
+- Add proper error logging
 
 
 
@@ -78,63 +95,88 @@ React Frontend (Not Created)
 - Message history with auto-scroll
 - Responsive styling and animations
 - Environment configuration (`.env`, `.env.example`)
+- Login page (`frontend/src/Login.jsx`)
+- Signup page (`frontend/src/Signup.jsx`)
+- Token-based authentication flow
+- Token persistence in localStorage
+- Page routing (login → chat, signup → chat)
+- Logout functionality
+- Protected chat endpoint with Bearer token
 
 
 ### Pending
 
-- Authentication UI (login page)
-- User sessions
-- Message persistence (local storage or backend)
+- User profile page
+- Chat history view
+- Settings/preferences page
+- Message search functionality
 
 
 
 ## Database Status
 
 
-Current:
+### Current
 
-Not configured
-
-
-Future:
-
-sqlite (postgresql should be used in prod, but we keep sqlite)
+- SQLite (file-based, no server needed)
+- Single table: `users` (id, email, hashed_password, created_at)
+- Location: `backend/genai.db`
 
 
-Tables planned:
+### Future
 
-users
-
-chat_history
+- PostgreSQL (for production scalability)
+- Migration to PostgreSQL requires only changing connection string
+- Additional tables planned:
+  - `chat_history` - Store conversations per user
+  - `messages` - Individual messages with timestamps
 
 
 
 ## Authentication Status
 
 
-Not implemented
+### Implemented
+
+JWT Authentication with the following flow:
+
+```
+User visits app
+        ↓
+Check localStorage for token
+        ↓
+Token exists?
+        ↓
+YES → Redirect to Chat Page
+NO  → Show Login Page
+        ↓
+User chooses Login or Signup
+        ↓
+Credentials validated → JWT token returned
+        ↓
+Token stored in localStorage → Redirect to Chat
+        ↓
+Chat requests include Bearer token
+        ↓
+Backend validates token → User authenticated
+```
+
+### Features
+
+- User signup with email validation
+- Password hashing with bcrypt
+- JWT token generation (30 min expiry)
+- Token validation on protected endpoints
+- Persistent sessions (localStorage)
+- Logout clears token
 
 
-Planned:
+### Pending
 
-JWT Authentication
-
-
-Flow:
-
-Register
-
-↓
-
-Login
-
-↓
-
-JWT Token
-
-↓
-
-Protected APIs
+- Token refresh mechanism
+- Remember me functionality
+- Email verification
+- Password reset flow
 
 
 
@@ -245,14 +287,17 @@ Keeps environment and app settings separate from route logic as the project grow
 
 ## Next Immediate Task
 
-Step 4: Test backend and frontend integration
+Step 5: Test authentication flow end-to-end
 
 1. Start backend: `uvicorn backend.app.main:app --reload`
 2. Start frontend: `npm run dev` (in `frontend/` directory)
 3. Navigate to `http://localhost:5173`
-4. Test chat functionality end-to-end
+4. Sign up with new account
+5. Test login/logout
+6. Verify JWT token in browser DevTools (Application → localStorage)
+7. Test protected chat endpoint
 
 
 ## Last Updated
 
-2026-06-15 — Simple React frontend created with chat interface
+2026-06-15 — Authentication system with SQLite, JWT tokens, and login/signup pages implemented

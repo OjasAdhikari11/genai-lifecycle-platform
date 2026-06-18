@@ -1,54 +1,121 @@
 import { useState, useEffect, useRef } from 'react'
 import { chatAPI } from './api'
 import { ChatMessage } from './ChatMessage'
+import { Login } from './Login'
+import { Signup } from './Signup'
 import './App.css'
 
 function App() {
+  const [currentPage, setCurrentPage] = useState('login') // 'login', 'signup', 'chat'
   const [messages, setMessages] = useState([])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
   const [connected, setConnected] = useState(false)
+  const [token, setToken] = useState(null)
   const messagesEndRef = useRef(null)
 
-  // Check API connection on mount
+  // Check if user is already logged in on mount
   useEffect(() => {
-    const checkConnection = async () => {
-      const isHealthy = await chatAPI.checkHealth()
-      setConnected(isHealthy)
+    const storedToken = localStorage.getItem('access_token')
+    if (storedToken) {
+      setToken(storedToken)
+      setCurrentPage('chat')
+      checkConnection(storedToken)
+    } else {
+      setCurrentPage('login')
     }
-    checkConnection()
   }, [])
+
+  // Check API connection
+  const checkConnection = async (authToken) => {
+    const isHealthy = await chatAPI.checkHealth()
+    setConnected(isHealthy)
+  }
 
   // Auto-scroll to bottom
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
 
+  const handleLoginSuccess = () => {
+    const storedToken = localStorage.getItem('access_token')
+    setToken(storedToken)
+    setCurrentPage('chat')
+    checkConnection(storedToken)
+  }
+
+  const handleSignupSuccess = () => {
+    const storedToken = localStorage.getItem('access_token')
+    setToken(storedToken)
+    setCurrentPage('chat')
+    checkConnection(storedToken)
+  }
+
+  const handleLogout = () => {
+    localStorage.removeItem('access_token')
+    localStorage.removeItem('user_id')
+    setToken(null)
+    setMessages([])
+    setCurrentPage('login')
+  }
+
+  const handleSwitchToSignup = () => {
+    setCurrentPage('signup')
+  }
+
+  const handleSwitchToLogin = () => {
+    setCurrentPage('login')
+  }
+
+  useEffect(() => {
+    window.addEventListener('switchToSignup', handleSwitchToSignup)
+    window.addEventListener('switchToLogin', handleSwitchToLogin)
+
+    return () => {
+      window.removeEventListener('switchToSignup', handleSwitchToSignup)
+      window.removeEventListener('switchToLogin', handleSwitchToLogin)
+    }
+  }, [])
+
   const handleSendMessage = async (e) => {
     e.preventDefault()
-    
-    if (!input.trim() || !connected) return
+
+    if (!input.trim() || !connected || !token) return
 
     const userMessage = input.trim()
     setInput('')
-    
+
     // Add user message
-    setMessages(prev => [...prev, { text: userMessage, isUser: true }])
+    setMessages((prev) => [...prev, { text: userMessage, isUser: true }])
     setLoading(true)
 
     try {
-      const response = await chatAPI.sendMessage(userMessage)
-      setMessages(prev => [...prev, { text: response, isUser: false }])
+      const response = await chatAPI.sendMessage(userMessage, token)
+      setMessages((prev) => [...prev, { text: response, isUser: false }])
     } catch (error) {
-      setMessages(prev => [...prev, { 
-        text: `Error: ${error.message}`, 
-        isUser: false 
-      }])
+      setMessages((prev) => [
+        ...prev,
+        {
+          text: `Error: ${error.message}`,
+          isUser: false,
+        },
+      ])
     } finally {
       setLoading(false)
     }
   }
 
+  // Render Login Page
+  if (currentPage === 'login') {
+    return <Login onLoginSuccess={handleLoginSuccess} />
+  }
+
+  // Render Signup Page
+  if (currentPage === 'signup') {
+    return <Signup onSignupSuccess={handleSignupSuccess} />
+  }
+
+  // Render Chat Page
   return (
     <div className="app-container">
       <div className="chat-header">
@@ -56,8 +123,13 @@ function App() {
           <h1>GenAI Chat</h1>
           <span className="author">by Ojas Adhikari</span>
         </div>
-        <div className={`status ${connected ? 'connected' : 'disconnected'}`}>
-          {connected ? '🟢 Connected' : '🔴 Disconnected'}
+        <div className="header-right">
+          <div className={`status ${connected ? 'connected' : 'disconnected'}`}>
+            {connected ? '🟢 Connected' : '🔴 Disconnected'}
+          </div>
+          <button className="logout-btn" onClick={handleLogout}>
+            Logout
+          </button>
         </div>
       </div>
 
@@ -88,8 +160,8 @@ function App() {
           disabled={loading || !connected}
           className="chat-input"
         />
-        <button 
-          type="submit" 
+        <button
+          type="submit"
           disabled={loading || !connected || !input.trim()}
           className="send-button"
         >

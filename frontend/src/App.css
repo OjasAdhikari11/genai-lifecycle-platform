@@ -47,16 +47,22 @@ body {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.chat-header h1 {
-  font-size: 1.5rem;
-  font-weight: 600;
-  margin: 0;
-}
-
 .header-left {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
+}
+
+.header-right {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.chat-header h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
 }
 
 .author {
@@ -64,6 +70,23 @@ body {
   opacity: 0.9;
   font-weight: 400;
   letter-spacing: 0.5px;
+}
+
+.logout-btn {
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.logout-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
 }
 
 .status {
