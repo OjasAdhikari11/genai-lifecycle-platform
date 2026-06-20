@@ -92,11 +92,35 @@ pytest
 
 Runs unit tests (security helpers) and API tests (health, auth, chat auth) using an in-memory database — no OpenAI calls.
 
-### CI (GitHub Actions)
+### CI/CD (GitHub Actions)
 
-On every push or pull request to `main`, GitHub Actions runs the same tests automatically (see `.github/workflows/ci.yml`).
+**CI** — on every push/PR to `main`, runs `pytest` (see `.github/workflows/ci.yml`).
 
-Check the **Actions** tab on your GitHub repo for pass/fail status.
+**CD** — on push to `main`, *after tests pass*, triggers deploy hooks for Render and Vercel.
+
+```
+Push code → pytest (CI) → if green → deploy hooks (CD) → live app updates
+```
+
+#### One-time CD setup (deploy hooks)
+
+1. **Redeploy** backend on Render and frontend on Vercel (see below).
+2. **Disable auto-deploy on git push** so only CI can trigger deploys:
+   - **Render:** Settings → turn off *Auto-Deploy* (or use deploy hook only)
+   - **Vercel:** Settings → Git → disable automatic deployments for production *(optional; hook redeploys after CI)*
+3. **Create deploy hooks:**
+   - **Render:** Service → Settings → **Deploy Hook** → copy URL
+   - **Vercel:** Project → Settings → Git → **Deploy Hooks** → create hook for `main` → copy URL
+4. **Add GitHub secrets** (repo → Settings → Secrets and variables → Actions):
+
+| Secret name | Value |
+|-------------|--------|
+| `RENDER_DEPLOY_HOOK` | Render deploy hook URL |
+| `VERCEL_DEPLOY_HOOK` | Vercel deploy hook URL |
+
+5. Push to `main` — Actions runs tests, then POSTs to both hooks if secrets are set.
+
+Verify CD worked: `GET https://YOUR-API.onrender.com/health` should include the latest `message` field.
 
 ## Deploy to production
 
@@ -169,14 +193,11 @@ Save and wait for Render to redeploy. Then test signup and chat on your Vercel U
 
 ## Scope & optional next steps
 
-Core lifecycle is complete: build → auth → chat → Docker → deploy → tests → CI.
+Core lifecycle is complete: build → auth → chat → Docker → deploy → tests → CI → CD.
 
 Intentionally **not** in scope (kept simple on purpose):
 - Chat history / message persistence
 - PostgreSQL or other managed database
-- Always-on hosted demo (deploy your own copy using the steps above)
-
-Optional later:
-- Manual CD workflow (deploy to Render/Vercel on demand)
+- Always-on hosted demo (tear down Render/Vercel when not demoing)
 
 See `docs/DEVELOPMENT_LOG.md` for build progress.

@@ -41,7 +41,10 @@ app.include_router(auth_router)
 
 @app.get("/health")
 def health_check() -> dict[str, str]:
-    return {"status": "ok"}
+    return {
+        "status": "ok",
+        "message": "GenAI Lifecycle Platform API v0.2",
+    }
 
 
 @app.post("/chat", response_model=ChatResponse)

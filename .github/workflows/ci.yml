@@ -1,4 +1,4 @@
-name: CI
+name: CI/CD
 
 on:
   push:
@@ -31,3 +31,30 @@ jobs:
 
       - name: Run pytest
         run: pytest -v
+
+  deploy:
+    name: Deploy (after tests pass)
+    needs: backend-tests
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    steps:
+      - name: Deploy backend to Render
+        env:
+          DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
+        run: |
+          if [ -z "$DEPLOY_HOOK" ]; then
+            echo "RENDER_DEPLOY_HOOK secret not set — skipping backend deploy"
+            exit 0
+          fi
+          curl -f -X POST "$DEPLOY_HOOK"
+
+      - name: Deploy frontend to Vercel
+        env:
+          DEPLOY_HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK }}
+        run: |
+          if [ -z "$DEPLOY_HOOK" ]; then
+            echo "VERCEL_DEPLOY_HOOK secret not set — skipping frontend deploy"
+            exit 0
+          fi
+          curl -f -X POST "$DEPLOY_HOOK"

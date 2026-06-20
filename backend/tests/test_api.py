@@ -6,7 +6,9 @@ SIGNUP_PAYLOAD = {"email": "test@example.com", "password": "pass123"}
 def test_health(client):
     response = client.get("/health")
     assert response.status_code == 200
-    assert response.json() == {"status": "ok"}
+    data = response.json()
+    assert data["status"] == "ok"
+    assert "message" in data
 
 
 def test_signup_and_login(client):
