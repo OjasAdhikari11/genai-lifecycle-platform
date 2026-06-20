@@ -1,11 +1,11 @@
+import os
 from datetime import datetime, timedelta
 
 import bcrypt
 from jose import JWTError, jwt
 from fastapi import HTTPException, status
 
-# JWT settings
-SECRET_KEY = "your-secret-key-change-in-production"  # Change this!
+SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key-change-in-production")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 

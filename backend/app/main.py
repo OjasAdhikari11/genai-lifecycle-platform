@@ -1,3 +1,5 @@
+import os
+
 from fastapi import FastAPI, HTTPException, Depends, Header, status
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
@@ -19,10 +21,15 @@ app = FastAPI(
     version="0.1.0",
 )
 
+_cors_origins = os.getenv(
+    "CORS_ORIGINS",
+    "http://localhost:5173,http://localhost:3000",
+).split(",")
+
 # Add CORS middleware to allow requests from frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://localhost:3000"],
+    allow_origins=[origin.strip() for origin in _cors_origins if origin.strip()],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
