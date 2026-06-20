@@ -1,6 +1,7 @@
 # GenAI Lifecycle Platform
 
-**Author:** Ojas Adhikari
+**Author:** Ojas Adhikari  
+**Email:** [ojasadhikari11@gmail.com](mailto:ojasadhikari11@gmail.com)
 
 A full-stack AI chat app with user authentication. FastAPI backend, React frontend, OpenAI integration.
 
