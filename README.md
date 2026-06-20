@@ -169,14 +169,4 @@ This project intentionally stays simple to teach the lifecycle end-to-end.
 **Included:** auth, protected chat, Docker locally, cloud deploy, pytest, CI/CD  
 **Not included:** chat persistence, PostgreSQL, Kubernetes, always-on public demo
 
-## Demo video idea
-
-A strong portfolio demo in ~3 minutes:
-
-1. Show live `/health` response
-2. Change the message in `backend/app/main.py`
-3. `git push` → show GitHub Actions (tests + deploy)
-4. Refresh `/health` — new message is live
-5. Optional: signup + chat on the Vercel URL
-
 See `docs/DEVELOPMENT_LOG.md` for build history.
