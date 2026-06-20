@@ -7,6 +7,10 @@
 
 A learning project that walks through the entire lifecycle of a GenAI application: build, run locally, containerize, deploy, test, and automate delivery with GitHub Actions.
 
+## Demo video
+
+[Watch the 7-minute walkthrough](https://www.youtube.com/watch?v=lxaU71bJdaA) — live deploy, CI/CD pipeline, and full app demo.
+
 ## What it does
 
 - Users sign up and log in (JWT authentication)
@@ -42,7 +46,6 @@ backend/                 FastAPI app, auth, tests
 frontend/                React app (login, signup, chat)
 .github/workflows/       CI/CD pipeline (ci.yml)
 docker-compose.yml       Run both services locally with Docker
-docs/                    Development log
 ```
 
 ## Quick start (local)
@@ -167,6 +170,5 @@ http://localhost:5173,https://your-app.vercel.app
 This project intentionally stays simple to teach the lifecycle end-to-end.
 
 **Included:** auth, protected chat, Docker locally, cloud deploy, pytest, CI/CD  
-**Not included:** chat persistence, PostgreSQL, Kubernetes, always-on public demo
 
-See `docs/DEVELOPMENT_LOG.md` for build history.
+
