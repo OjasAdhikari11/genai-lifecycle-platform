@@ -43,7 +43,7 @@ app.include_router(auth_router)
 def health_check() -> dict[str, str]:
     return {
         "status": "ok",
-        "message": "GenAI Lifecycle Platform API v0.4  - GitHub Actions CI V4",
+        "message": "GenAI Lifecycle Platform API v0.5  - GitHub Actions CI V5",
     }
 
 
